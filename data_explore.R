@@ -38,7 +38,7 @@ glimpse(dat)
 #   select(x_inv_accuracy, y_mmprop) 
 
 
-tmpccf0 <- dat[dat$x_inv_accuracy > 0.8 | d_everything_z$y_mmprop > 0.99, c('f_fac_num','x_yearwk','x_inv_accuracy','y_mmprop')]
+tmpccf0 <- dat[dat$x_inv_accuracy > 0.8 | dat$y_mmprop > 0.99, c('f_fac_num','x_yearwk','x_inv_accuracy','y_mmprop')]
 
 ufac <- sort(unique(tmpccf0$f_fac_num))
 
@@ -125,15 +125,15 @@ acf.plot = function(d){
 
 # dat = read.table("clipboard", header = TRUE)
 
-dat = tmpccf_001
+datts = tmpccf_001
 
-head(dat); tail(dat)
+head(datts); tail(datts)
 
 # RECODE USING 'X' AND 'Y'
 #   y = visc
 #   x = temp
 
-gdat = dat[, c(3,4)]
+gdat = datts[, c(3,4)]
 
 names(gdat) <- c('x', 'y')
 
@@ -192,6 +192,10 @@ acf.plot(residuals(pw.y))
 tsint <- ts.intersect(ts.x, ts.y)
 
 
+detach("package:broom", unload=TRUE)
+detach("package:dplyr", unload=TRUE)
+
+
 # MIGHT BE NECESSARY TO UNLOAD DPLYR TO RUN TSA PREWHITEN
 # detach("package:broom", unload=TRUE)
 # detach("package:janitor", unload=TRUE)
@@ -211,7 +215,7 @@ pw.tsa = TSA::prewhiten(ts.x, ts.y); print(pw.tsa)
 #  Oddly, 'x' refers to the presumed endogenous variable and 'y' refers to the presumed exogenous variable.
 #  This is opposite of what is usually expected.
 
-ccf.val = ccf(residuals(pw.y),residuals(pw.x)); abline(v=0, col = 'red')
+ccf.val = ccf(residuals(pw.y), residuals(pw.x)); abline(v=0, col = 'red')
 # output matches Bowerman Figure 14.5 ccf
 
 
@@ -367,6 +371,7 @@ head(pcainit$rotation)
 fviz_screeplot(pcainit)
 fviz_screeplot(pcainit, geom = 'line')
 
+dim(dat_pca_num)
 
 get_eig(pcainit)
 
